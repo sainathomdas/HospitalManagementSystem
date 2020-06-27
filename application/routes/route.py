@@ -6,6 +6,7 @@ from functools import wraps
 from application.models import login as login_table
 from application.models import userstore as user_store_table
 from application.models import patient as patient_table
+from application.models import medicinesIssued as medicines_issued_table
 
 
 @app.route('/')
@@ -169,3 +170,36 @@ def viewPatients():
 @is_logged_in
 def searchPatient():
     return render_template('search_patient.html', searchPatient = True)
+
+# =======================================================================================================
+
+
+@app.route('/issue_medicines/')
+@is_logged_in
+def issueMedicines():
+    return render_template('issue_medicines.html', issueMedicines = True)
+
+
+@app.route('/get_medicines/', methods = ['GET', 'POST'])
+@is_logged_in
+def getMedicines():
+    if request.method == 'POST':
+        pid = request.form['pid']
+        result = medicines_issued_table.read_medicines_issued(f"pid={pid}")
+        print(len(result))
+        if (len(result) > 0):
+            return jsonify(result)
+        else:
+            return jsonify({'error' : 'No medicines issued yet !!'})
+
+
+@app.route('/add_medicines_to_database/', methods = ['GET', 'POST'])
+@is_logged_in
+def addMedicinesToDatabase():
+    if request.method == 'POST':
+        pid = request.form['pid']
+        for medicine, qty, rate, amt in zip(request.form.getlist('medicine'), request.form.getlist('qty'), request.form.getlist('rate'), request.form.getlist('amt')):
+            medicines_issued_table.insert_medicines_issued(f"{int(pid)}, '{medicine}', {int(qty)}, {float(rate)}, {float(amt)} ")
+        
+        flash('Medicines issued successfully', 'success')
+        return redirect(url_for('issueMedicines'))
