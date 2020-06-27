@@ -1,0 +1,30 @@
+<div class="container-fluid blue pb-0" id="nav-container">
+    <a class="hosp" href="#">ABC HOSPITAL</a>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="navbar">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 {% if home %}
+                                    active
+                            {% endif %}
+                             pb-0" href=" {{ url_for('home') }} ">Home </a>
+                    </li>
+               
+                    <li class="nav-item">
+                        <a class="nav-link mx-3 {% if diagnostics %}
+                                active
+                        {% endif %}
+                         pb-0" href="{{ url_for('diagnostics') }}">Diagnostics</a>
+                    </li>
+      
+                <li class="nav-item">
+                    <a class="nav-link mx-2  pb-0" href=" {{ url_for('logout') }} ">Logout</a>
+                </li>
+                </ul>
+            </div>
+        </nav>
+    </div>

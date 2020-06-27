@@ -8,6 +8,8 @@ from application.models import userstore as user_store_table
 from application.models import patient as patient_table
 from application.models import medicine as medicine_table
 from application.models import medicinesIssued as medicines_issued_table
+from application.models import diagnostics as diagnostics_table
+from application.models import patient_diagnostics as patient_diagnostics_table
 
 
 @app.route('/')
@@ -189,7 +191,6 @@ def getMedicines():
     if request.method == 'POST':
         pid = request.form['pid']
         result = medicines_issued_table.read_medicines_issued(f"pid={pid}")
-        print(len(result))
         if (len(result) > 0):
             return jsonify(result)
         else:
@@ -234,3 +235,55 @@ def getMedicineDetails():
             return jsonify(row)
 
 # =======================================================================================================
+
+@app.route('/diagnostics/', methods = ['GET', 'POST'])
+@is_logged_in
+def diagnostics():
+    return render_template('diagnostics.html', diagnostics = True)
+
+
+
+@app.route('/add_diagnostics/', methods = ['GET', 'POST'])
+@is_logged_in
+def addDiagnostics():
+    if 'pid' in session:
+        diagnostics = diagnostics_table.read_diagnostics()
+        return render_template('add_diagnostics.html', diagnostics = True, diagnostic_tests = diagnostics)
+    else:
+        return redirect(url_for('diagnostics'))
+
+@app.route('/get_tests_conducted/', methods = ['GET', 'POST'])
+@is_logged_in
+def getTestsConducted():
+    if request.method == 'POST':
+        pid = request.form['pid']
+        result = patient_diagnostics_table.read_patient_diagnostics(int(pid))
+        if (len(result) > 0):
+            return jsonify(result)
+        else:
+            return jsonify({'error' : 'No tests conducted yet !!'})
+
+@app.route('/get_test_details/', methods = ['GET', 'POST'])
+@is_logged_in
+def getTestDetails():
+    if request.method == 'POST':
+        tid = request.form['test_id'] 
+        test_details = diagnostics_table.read_diagnostics(f"id={tid}")
+        for row in test_details:
+            return jsonify(row)
+
+
+@app.route('/add_tests_to_database/', methods = ['GET', 'POST'])
+@is_logged_in
+def addTestsToDatabase():
+    if request.method == 'POST':
+        pid = session['pid']
+        print(request.form.getlist('tname'))
+        for tname in request.form.getlist('tname'):
+            result = diagnostics_table.getTestsByName(tname)
+            for row in result:
+                patient_diagnostics_table.insert_patient_diagnostics(f"{int(pid)},{row[0]}")
+        
+        flash('Diagnostics added successfully', 'success')
+        session.pop('pid', None)
+        return redirect(url_for('diagnostics'))
