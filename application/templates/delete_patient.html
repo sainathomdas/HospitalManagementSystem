@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %} ABC Hospital | Delete Patient {% endblock %}
+
+{% block content %}
+
+<div class="title mt-5">
+    Delete Patient
+</div>
+
+
+{% include "includes/flash_message.html" %}
+
+<div class="wrapper mt-5">
+    <div class="form">
+        <div class="inputfield">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="pid">Patient ID <span class="star">*</span> </label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" pattern="\d*" id="pid_for_search" class="input form-control-sm" value="" required
+                        maxlength="9" minlength="9">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn-sm black text-white" onclick="loadData()"> GET </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="errorAlert" class="alert alert-danger alert-dismissible container mx-auto mt-3 col-md-10" role="alert"
+    style="max-width: 500px;display: none;">
+</div>
+
+
+<div class="wrapper mt-5" id="patientDataForm">
+    <form action=" {{ url_for('deletePatientFromDatabase') }} " method="POST">
+        <input type="number" id="pid" value="" name="pid" hidden>
+        <div class="form">
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="pname">Patient Name </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="pname" class="input form-control-sm disabled" id="pname" readonly
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="page">Patient Age</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input name="page" id="page" class="input form-control-sm disabled" data-parsley-type="number"
+                            data-parsley-type="integer" maxlength="3" readonly required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="doa">Date of Admission</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" onkeydown="return false" name="doa" id="doa"
+                            class="input form-control disabled" readonly required />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="type_of_bed">Type of Bed </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="custom_select ">
+                            <select id="type_of_bed" class="form-control disabled" name="type_of_bed" required readonly>
+                                <option value="">Type of Bed</option>
+                                <option value="general_ward">General Ward</option>
+                                <option value="semi_sharing">Semi Sharing</option>
+                                <option value="single_room">Single Room</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="paddress">Address </label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea name="paddress" id="paddress" class="textarea form-control-sm disabled" readonly
+                            required></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <span class="star font-small font-weight-bolder ml-1 mt-0 pt-0"> (*) Fields are compulsory</span>
+
+            <div class="justify-content-center">
+                <center>
+                    <input type="submit" value="Delete" class="btn btn-sm black text-white mx-auto">
+                </center>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function loadData() {
+        $.ajax({
+            data: {
+                pid: $('#pid_for_search').val()
+            },
+            type: 'POST',
+            url: "{{ url_for('getPatient') }}"
+        })
+            .done(function (data) {
+                if (data.error) {
+                    $('#errorAlert').text(data.error).show();
+                    $('#pid').val("");
+                    $('#pname').val("");
+                    $('#page').val("");
+                    $('#type_of_bed').val("");
+                    $('#doa').val("");
+                    $('#paddress').val("");
+                }
+                else {
+                    console.log(data);
+                    $('#errorAlert').text(data.error).hide();
+                    $('#pid').val(data[0]);
+                    $('#pname').val(data[2]);
+                    $('#page').val(data[3]);
+                    $('#type_of_bed').val(data[5]);
+                    $('#doa').val(data[4]);
+                    $('#paddress').val(data[6] + ", " + data[8] + ", " + data[7]);
+                }
+
+            });
+    }
+</script>
+
+
+{% endblock %}

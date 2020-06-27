@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+ body {
+    background-color: skyblue;
+} 
+
+
+/* =================================== navbar ==================================== */
+#nav-container {
+    padding-top: 2rem;
+}
+
+nav ul li a.active {
+    border-bottom: 2.5px solid white;
+}
+.hosp{
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    
+}
+nav {
+    background-color: #1b6ca8;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.dropdown-menu{
+  background-color: #1b6ca8;
+  z-index: 100;
+  margin-top: 10;
+  }
+
+@media (min-width:1025px) {
+    /* big landscape tablets, laptops, and desktops */
+    nav {
+        margin-left: 2em;
+        margin-right: 2em;
+        margin-top: 0.5rem;
+    }
+    .hosp {
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
+    
+.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+}
+
+@media (min-width:1281px) {
+    /* hi-res laptops and desktops */
+    nav {
+        margin-left: 9em;
+        margin-right: 9em;
+        margin-top: 1rem;
+    }
+    .hosp {
+        margin-left: 9rem;
+        margin-right: 9rem;
+    }
+    
+.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+}
+  
+/* =================================== end of navbar ==================================== */
+
+
+
+/* =================================== login ==================================== */
+header {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+            rgba(5, 5, 5, 0.7),
+            rgba(05, 5, 5, 0.4)),
+        url('../img/bg.jpg') center no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.login-wrapper{
+    margin: 10px;
+  }
+  
+  .form-signin{
+    max-width: 380px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 15px 40px 50px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+  }
+  
+  .form-signin .form-signin-heading{
+    margin-bottom: 30px;
+    font-family: 'Fira Sans', sans-serif;
+  }
+  .form-signin input[type="text"], .form-signin input[type="password"]{
+    margin-bottom: 20px;
+    font-family: 'Fira Sans', sans-serif;
+  }
+  label{
+      text-decoration: none;
+      font-family: 'Fira Sans', sans-serif;
+  }
+
+
+  /* ===================================end of login ==================================== */
+/* =================================== scroll to top ==================================== */
+
+#scroll {
+    position:fixed;
+    right:10px;
+    bottom:10px;
+    cursor:pointer;
+    width:50px;
+    height:50px;
+    background-color:gold;
+    text-indent:-9999px;
+    display:none;
+    -webkit-border-radius:60px;
+    -moz-border-radius:60px;
+    border-radius:60px
+}
+#scroll span {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-left:-8px;
+    margin-top:-12px;
+    height:0;
+    width:0;
+    border:8px solid transparent;
+    border-bottom-color:#000000;
+}
+
+/* =================================== end of scroll to top ==================================== */
+
+/* =================================== General ==================================== */
+
+
+.star{
+    color: red;
+}
+.disabled{
+  background-color: lightgrey;
+}
+.title{
+  font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: black;
+    text-transform: uppercase;
+    text-align: center;
+}
+/* =================================== end ofGeneral ==================================== */
+
+
+
+/* =================================== Form ==================================== */
+.wrapper{
+    max-width: 500px;
+    width: 100%;
+  
+    margin: 0 auto;
+ 
+    padding: 15 px;
+  }
+  
+  .wrapper .title{
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: black;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  
+  .wrapper .form{
+    width: 100%;
+  }
+  
+  .wrapper .form .inputfield{
+    margin-bottom: 15px;
+    /* display: flex; */
+   /* align-items: center;*/
+  }
+  
+  .wrapper .form .inputfield label{
+     width: 220px;
+     color: #000;
+     margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .wrapper .form .inputfield .input,
+  .wrapper .form .inputfield .textarea{
+    width: 100%;
+    outline: none;
+    border: 1px solid #000;
+    font-size: 15px;
+    padding: 8px 10px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+  
+  .wrapper .form .inputfield .textarea{
+    width: 100%;
+    height: 75px;
+    resize: none;
+  }
+  
+  .wrapper .form .inputfield .custom_select{
+    position: relative;
+    width: 100%;
+    height: 37px;
+  }
+  
+  .wrapper .form .inputfield .custom_select:before{
+    content: "";
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    border: 8px solid;
+    border-color: #000 transparent transparent transparent;
+    pointer-events: none;
+  }
+  
+  .wrapper .form .inputfield .custom_select select{
+    -webkit-appearance: none;
+    -moz-appearance:   none;
+    appearance:        none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    padding: 8px 10px;
+    font-size: 15px;
+    border: 1px solid #000;
+    border-radius: 3px;
+  }
+  
+  
+  .wrapper .form .inputfield .input:focus,
+  .wrapper .form .inpustfield .textarea:focus,
+  .wrapper .form .inputfield .custom_select select:focus{
+    border: 1px solid gold;
+  }
+  
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+  
+  @media (max-width:420px) {
+    .wrapper .form .inputfield{
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .wrapper .form .inputfield label{
+      margin-bottom: 5px;
+    }
+  
+  }
+
+
+  /* =================================== End of Form ==================================== */

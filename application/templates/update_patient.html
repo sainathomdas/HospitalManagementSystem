@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %} ABC Hospital | Update Patient {% endblock %}
+
+{% block content %}
+
+<div class="title mt-5">
+    Update Patient
+</div>
+
+
+{% include "includes/flash_message.html" %}
+
+<div class="wrapper mt-5">
+    <div class="form">
+        <div class="inputfield">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="pid">Patient ID <span class="star">*</span> </label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" pattern="\d*" id="pid_for_search" class="input form-control-sm" value="" required
+                        maxlength="9" minlength="9">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn-sm black text-white" onclick="loadData()"> GET </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="errorAlert" class="alert alert-danger alert-dismissible container mx-auto mt-3 col-md-10" role="alert"
+    style="max-width: 500px;display: none;">
+</div>
+
+
+<div class="wrapper mt-5" id="patientDataForm">
+    <form action=" {{ url_for('updatePatientIntoDatabase') }} " method="POST">
+        <input type="number" id="pid" value="" name="pid" hidden>
+        <div class="form">
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="pname">Patient Name <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="pname" class="input form-control-sm" id="pname" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="page">Patient Age <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input name="page" id="page" class="input form-control-sm" data-parsley-type="number"
+                            data-parsley-type="integer" maxlength="3" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="doa">Date of Admission<span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" onkeydown="return false" name="doa" id="doa" required />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="type_of_bed">Type of Bed <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="custom_select ">
+                            <select id="type_of_bed" class="form-control" name="type_of_bed" required>
+                                <option value="">Type of Bed</option>
+                                <option value="general_ward">General Ward</option>
+                                <option value="semi_sharing">Semi Sharing</option>
+                                <option value="single_room">Single Room</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="paddress">Address <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea name="paddress" id="paddress" class="textarea form-control-sm" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="pstate">State <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="custom_select ">
+                            <select onchange="print_city('state', this.selectedIndex);" id="sts" name="pstate"
+                                class="form-control" required></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inputfield">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="pcity">City <span class="star">*</span> </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="custom_select ">
+                            <select id="state" class="form-control" name="pcity" required></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <span class="star font-small font-weight-bolder ml-1 mt-0 pt-0"> (*) Fields are compulsory</span>
+
+            <div>
+                <input type="submit" value="Update" class="btn btn-sm black text-white">
+                <input type="reset" value="Reset" class="ml-lg-5 btn btn-sm black text-white">
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function loadData() {
+        $.ajax({
+            data: {
+                pid: $('#pid_for_search').val()
+            },
+            type: 'POST',
+            url: "{{ url_for('getPatient') }}"
+        })
+            .done(function (data) {
+                if (data.error) {
+                    $('#errorAlert').text(data.error).show();
+                    $('#pid').val("");
+                    $('#pname').val("");
+                    $('#page').val("");
+                    $('#type_of_bed').val("");
+                    $('#doa').val("");
+                    $('#paddress').val("");
+                }
+                else {
+                    console.log(data);
+                    $('#errorAlert').text(data.error).hide();
+                    $('#pid').val(data[0]);
+                    $('#pname').val(data[2]);
+                    $('#page').val(data[3]);
+                    $('#type_of_bed').val(data[5]);
+                    $('#doa').val(data[4]);
+                    $('#paddress').val(data[6]);
+                }
+
+            });
+    }
+</script>
+<script language="javascript">print_state("sts");</script>
+
+
+{% endblock %}

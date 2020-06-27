@@ -1,0 +1,54 @@
+<div class="container-fluid blue pb-0" id="nav-container">
+    <a class="hosp" href="#">ABC HOSPITAL</a>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="navbar">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link mx-4 text-white {% if home %}
+                                active
+                        {% endif %}
+                         pb-0" href=" {{ url_for('home') }} ">Home </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle mx-4 pb-0 {% if activate_patient_mgmt %}
+                        active
+                {% endif %} " id="customer-mgmt" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">Patient Management
+                    </a>
+                    <div class="dropdown-menu dropdown-default" aria-labelledby="customer-mgmt">
+                        <a class="text-center dropdown-item" href=" {{ url_for('createPatient') }} " >Create Patient</a>
+                        <a class="text-center dropdown-item" href="{{ url_for('updatePatient') }}">Edit Patient</a>
+                        <a class="text-center dropdown-item" href=" {{ url_for('deletePatient') }} " >Delete Patient</a>
+                        
+
+                    </div>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link mx-4 {% if search %}
+                                active
+                        {% endif %}
+                         pb-0" href=" ">Search Patient </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-4 {% if billing %}
+                                active
+                        {% endif %}
+                         pb-0" href=" ">Billing </a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link mx-4  pb-0" href=" {{ url_for('logout') }} ">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
