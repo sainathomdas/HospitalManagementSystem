@@ -145,6 +145,18 @@
   <script type="text/javascript" src=" {{ url_for('static', filename = 'js/mdb.min.js') }}"></script>
   <script type="text/javascript" src=" {{ url_for('static', filename = 'js/parsley.min.js') }}"></script>
   <script type="text/javascript" src=" {{ url_for('static', filename = 'js/my_js.js') }}"></script>
+  {% if datatable %}
+
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/addons/datatables.min.js') }}"></script>
+  <script>
+    $(document).ready(function () {
+      $('#datatable').DataTable({
+        "ordering": false,
+      });
+      $('.dataTables_length').addClass('bs-select');
+    });
+  </script>
+  {% endif %}
 
 
 

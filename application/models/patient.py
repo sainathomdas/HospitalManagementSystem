@@ -8,8 +8,6 @@ def create_conn():
     except Error as e:
         print(e)
     return conn
-    
-
 
 def insert_patient(values):
     print(values)
@@ -25,8 +23,7 @@ def insert_patient(values):
         return False
     conn.commit()
     conn.close()
-    return True
-    
+    return True    
 
 def read_patient(condition="1=1"):
     conn = create_conn()
@@ -41,8 +38,7 @@ def read_patient(condition="1=1"):
     rows = cur.fetchall()
     conn.commit()
     conn.close()
-    return rows
-    
+    return rows    
 
 def update_patient(values, condition="1=1"):
     conn = create_conn()
@@ -56,8 +52,7 @@ def update_patient(values, condition="1=1"):
         return False
     conn.commit()
     conn.close()
-    return True
-    
+    return True    
 
 def delete_patient(condition="1=1"):
     conn = create_conn()
@@ -85,4 +80,3 @@ def getLastRow():
     conn.commit()
     conn.close()
     return rows
-    

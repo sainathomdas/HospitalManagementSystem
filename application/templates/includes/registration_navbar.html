@@ -21,20 +21,24 @@
                         aria-expanded="false">Patient Management
                     </a>
                     <div class="dropdown-menu dropdown-default" aria-labelledby="customer-mgmt">
-                        <a class="text-center dropdown-item" href=" {{ url_for('createPatient') }} " >Create Patient</a>
+                        <a class="text-center dropdown-item" href=" {{ url_for('createPatient') }} ">Create Patient</a>
                         <a class="text-center dropdown-item" href="{{ url_for('updatePatient') }}">Edit Patient</a>
-                        <a class="text-center dropdown-item" href=" {{ url_for('deletePatient') }} " >Delete Patient</a>
-                        
+                        <a class="text-center dropdown-item" href=" {{ url_for('deletePatient') }} ">Delete Patient</a>
+
 
                     </div>
                 </li>
-
-
                 <li class="nav-item">
-                    <a class="nav-link mx-4 {% if search %}
+                    <a class="nav-link mx-4 {% if viewPatients %}
                                 active
                         {% endif %}
-                         pb-0" href=" ">Search Patient </a>
+                         pb-0" href=" {{ url_for('viewPatients') }} ">View Patients </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-4 {% if searchPatient %}
+                                active
+                        {% endif %}
+                         pb-0" href="{{ url_for('searchPatient') }}">Search Patient </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link mx-4 {% if billing %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} ABC Hospital | View Patients {% endblock %}
+
+{% block content %}
+
+
+<div class="title mt-md-4">
+    View Patients
+</div>
+{% include "includes/flash_message.html" %}
+
+<!-- MDBootstrap Datatables  -->
+<link href=" {{ url_for('static',filename = 'css/addons/datatables.min.css') }}" rel="stylesheet">
+
+<div class="container table-responsive mt-2">
+  <table id="datatable" class="table container table-sm  table-hover table-bordered table-striped text-center"
+    align="center">
+    <thead style="background-color: #1b6ca8;" class="text-white">
+      <tr>
+        <th class="font-weight-bold">Patient ID</th>
+        <th scope="col" class="font-weight-bold th-lg">Name</th>
+        <th scope="col" class="font-weight-bold th-sm">Age</th>
+        <th scope="col" class="font-weight-bold">Address</th>
+        <th scope="col" class="font-weight-bold">DOJ</th>
+        <th scope="col" class="font-weight-bold">Type of Room</th>
+      </tr>
+    </thead>
+    <tbody class="text-dark font-weight-bold">
+      {% for row in data %}
+      <tr>
+        <td class="font-weight-normal">{{row[0]}}</td>
+        <td class="font-weight-normal">{{ row[2] }}</td>
+        <td class="font-weight-normal">{{ row[3] }}</td>
+        <td class="font-weight-normal">{{ row[6] }}, {{ row[8] }}, {{ row[7] }}</td>
+        <td class="font-weight-normal">{{ row[4] }}</td>
+        <td class="font-weight-normal">{{ row[5] }}</td>   
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

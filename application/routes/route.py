@@ -118,7 +118,7 @@ def getPatient():
                 print(row)
                 return jsonify(row)
         else:
-            return jsonify({'error' : 'Patient not found!'})
+            return jsonify({'error' : 'Patient not found !!'})
 
 @app.route('/update_patient_into_database/', methods = ['GET', 'POST'])
 @is_logged_in
@@ -156,3 +156,16 @@ def deletePatientFromDatabase():
         else:
             flash('An unknown error occured', 'warning')
         return redirect(url_for('deletePatient'))
+
+
+@app.route('/view_patients/')
+@is_logged_in
+def viewPatients():
+    result = patient_table.read_patient()
+    return render_template('view_patient.html', datatable = True, viewPatients = True, data=result)
+
+
+@app.route('/search_patient/')
+@is_logged_in
+def searchPatient():
+    return render_template('search_patient.html', searchPatient = True)
