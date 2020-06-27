@@ -7,13 +7,13 @@ def create_conn():
         return conn
     except Error as e:
         print(e)
-    return conn  
+    return conn
 
-def insert_medicines_issued(values):
+def insert_medicine(values):
     print(values)
     conn = create_conn()
     cur = conn.cursor()
-    sql = "insert into medicines_issued(pid, mid,medicine,quantity,rate,amount) values({});".format(values);
+    sql = "insert into medicine(mid, name,quantity,rate) values({});".format(values);
     print(sql)
     try:
         cur.execute(sql)
@@ -23,10 +23,10 @@ def insert_medicines_issued(values):
     conn.close()
     
 
-def read_medicines_issued(condition="1=1"):
+def read_medicine(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "select * from medicines_issued where {};".format(condition)
+    sql = "select * from medicine where {};".format(condition)
     print(sql)
     try:
         cur.execute(sql)
@@ -38,23 +38,25 @@ def read_medicines_issued(condition="1=1"):
     return rows
     
 
-def update_medicines_issued(values, condition="1=1"):
+def update_medicine(values, condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "update medicines_issued set {} where {};".format(values, condition)
+    sql = "update medicine set {} where {};".format(values, condition)
     print(sql)
     try:
         cur.execute(sql)
     except:
         print("Something Went wrong")
+        return False
     conn.commit()
     conn.close()
+    return True
     
 
-def delete_medicines_issued(condition="1=1"):
+def delete_medicine(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "delete from  medicines_issued  where {};".format(condition)
+    sql = "delete from  medicine  where {};".format(condition)
     print(sql)
     try:
         cur.execute(sql)

@@ -52,13 +52,22 @@ patient_table = """CREATE TABLE IF NOT EXISTS patient (
                                 );"""
 
 
+medicine_table = """CREATE TABLE IF NOT EXISTS medicine (
+                                    mid integer PRIMARY KEY,
+                                    name text NOT NULL,
+                                    quantity integer NOT NULL,
+                                    rate integer NOT NULL
+                                );"""
+
 medicines_issued_table = """CREATE TABLE IF NOT EXISTS medicines_issued (
                                     pid integer NOT NULL,
+                                    mid text NOT NULL,
                                     medicine text NOT NULL,
                                     quantity integer NOT NULL,
                                     rate integer NOT NULL,
                                     amount integer NOT NULL,
-                                    FOREIGN KEY (pid) REFERENCES patient(pid)
+                                    FOREIGN KEY (pid) REFERENCES patient(pid),
+                                    FOREIGN KEY (mid) REFERENCES medicine(mid)
                                 );"""
                         
 conn = create_connection(db_file)
@@ -67,6 +76,7 @@ if conn is not None:
     create_table(conn, login_table)
     create_table(conn, user_store_table)
     create_table(conn, patient_table)
+    create_table(conn, medicine_table)    
     create_table(conn, medicines_issued_table)
 else:
     print("Error! cannot create the database connection.")

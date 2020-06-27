@@ -6,6 +6,7 @@ from functools import wraps
 from application.models import login as login_table
 from application.models import userstore as user_store_table
 from application.models import patient as patient_table
+from application.models import medicine as medicine_table
 from application.models import medicinesIssued as medicines_issued_table
 
 
@@ -113,12 +114,14 @@ def getPatient():
     if request.method == 'POST':
         pid = request.form['pid']
         result = patient_table.read_patient(f"pid={pid}")
-        print(len(result))
         if (len(result) > 0):
+            session['pid'] = pid
             for row in result:
-                print(row)
+                session['pid'] = pid
                 return jsonify(row)
+                
         else:
+            session.pop('pid', None)
             return jsonify({'error' : 'Patient not found !!'})
 
 @app.route('/update_patient_into_database/', methods = ['GET', 'POST'])
@@ -197,9 +200,37 @@ def getMedicines():
 @is_logged_in
 def addMedicinesToDatabase():
     if request.method == 'POST':
-        pid = request.form['pid']
-        for medicine, qty, rate, amt in zip(request.form.getlist('medicine'), request.form.getlist('qty'), request.form.getlist('rate'), request.form.getlist('amt')):
-            medicines_issued_table.insert_medicines_issued(f"{int(pid)}, '{medicine}', {int(qty)}, {float(rate)}, {float(amt)} ")
+        pid = session['pid']
+        for mid, medicine, qty, rate, amt in zip(request.form.getlist('mid'), request.form.getlist('medicine'), request.form.getlist('qty'), request.form.getlist('rate'), request.form.getlist('amt')):
+            medicines_issued_table.insert_medicines_issued(f"{int(pid)}, {int(mid)}, '{medicine}', {int(qty)}, {float(rate)}, {float(amt)} ")            
+
+            medicine_table_data = medicine_table.read_medicine(f"mid={mid}")
+            actual_qty = 0
+            for row in medicine_table_data:
+                actual_qty = row[2]
+            medicine_table.update_medicine(f"quantity='{int(actual_qty) - int(qty)}'", f"mid={mid}")
         
         flash('Medicines issued successfully', 'success')
+        session.pop('pid', None)
         return redirect(url_for('issueMedicines'))
+
+@app.route('/issue_new_medicines/', methods = ['GET', 'POST'])
+@is_logged_in
+def issueNewMedicines():
+    if 'pid' in session:
+        medicines = medicine_table.read_medicine()
+        return render_template('issue_new_medicines.html', issueMedicines = True, medicines = medicines)
+    else:
+        return redirect(url_for('issueMedicines'))
+
+
+@app.route('/get_medicine_details/', methods = ['GET', 'POST'])
+@is_logged_in
+def getMedicineDetails():
+    if request.method == 'POST':
+        mid = request.form['medicine_id'] # mid = medicine_id
+        medicine_details = medicine_table.read_medicine(f"mid={mid}")
+        for row in medicine_details:
+            return jsonify(row)
+
+# =======================================================================================================

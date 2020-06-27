@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} ABC Hospital | Issue Medicines{% endblock %}
+{% block title %} ABC Hospital | Issued Medicines{% endblock %}
 
 {% block content %}
 
@@ -75,100 +75,13 @@
         </tbody>
     </table>
 </div>
-<hr class="w-75">
-<!-- ================================================================================ -->
 
-<div class="container my-5" id="issue_medicines_div" style="display: none;">
-    <h5><strong>Issue Medicines:</strong></h5>
-    <div class="row">
-        <div class="col-md-6 py-3 px-3" style="border: 2px solid #1b6ca8;">
-            <div class="form">
-                <div class="inputfield my-1">
-                    <div class="row">
-                        <div class="offset-md-1 col-md-4">
-                            <label for="medicine">Medicine <span class="star">*</span> </label>
-                        </div>
-                        <div class="col-md-7">
-                            <input type="text" id="medicine" class="input form-control-sm" required>
-                            <small id="medicine_helptext" class="form-text text-danger" style="display: none;">
-                                Medicine name required
-                              </small>
-                        </div>
-                        
-                    </div>
-                </div>
-
-                <div class="inputfield my-1">
-                    <div class="row">
-                        <div class="offset-md-1 col-md-4">
-                            <label for="quantity">quantity <span class="star">*</span> </label>
-                        </div>
-                        <div class="col-md-7">
-                            <input type="number" id="quantity" class="input form-control-sm" required>
-                            <small id="quantiy_helptext" class="form-text text-danger" style="display: none;">
-                                Required and must be an integer
-                              </small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="inputfield my-1">
-                    <div class="row">
-                        <div class="offset-md-1 col-md-4">
-                            <label for="rate">Rate(in Rs.) <span class="star">*</span> </label>
-                        </div>
-                        <div class="col-md-7">
-                            <input type="number" id="rate" class="input form-control-sm" required>
-                            <small id="rate_helptext" class="form-text text-danger" style="display: none;">
-                                Required and must be an integer
-                              </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- <div class="inputfield my-1">
-                    <div class="row">
-                        <div class="offset-md-1 col-md-4">
-                            <label for="amount">Amount(in Rs.) <span class="star">*</span> </label>
-                        </div>
-                        <div class="col-md-7">
-                            <input type="number" id="amount" class="input form-control-sm disabled" readonly required>
-                        </div>
-                    </div>
-                </div> -->
-                <center>
-                    <button onclick="addMedicine()" class="btn btn-sm black text-white">Add</button>
-                </center>
-            </div>
-        </div>
-
-
-
-
-        <div class="col-md-6">
-            <form action="{{ url_for('addMedicinesToDatabase') }}" method="POST">
-                <input name="pid" id="pid" value="" hidden>
-                <table class="table container table-sm table-fixed table-hover table-bordered text-center"
-                    align="center">
-                    <thead style="background-color: #1b6ca8;" class="text-white">
-                        <tr>
-                            <th class="font-weight-bold">Medicine</th>
-                            <th scope="col" class="font-weight-bold th-lg">Quantity</th>
-                            <th scope="col" class="font-weight-bold th-sm">Rate(in Rs.)</th>
-                            <th scope="col" class="font-weight-bold">Amount(in Rs.)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-dark font-weight-bold" id="issueMedicinesTable">
-
-                    </tbody>
-                </table>
-                <input type="submit" value="Issue" class="btn btn-sm black text-white ml-auto" id="issueBtn" style="display: none;">
-            </form>
-        </div>
-    </div>
+<div class="container">
+    <center>
+        <a href="{{ url_for('issueNewMedicines') }}" id="issueMedicinesBtn" class="btn btn-sm black text-white" style="display: none;">Issue Medicines</a>
+    </center>
 </div>
-
-
+<!-- ================================================================================ -->
 
 
 <script>
@@ -190,11 +103,14 @@
                     $('#type_of_room').html("");
                     $('#doj').html("");
                     $('#address').html("");
-                    $('#medicines_issued_div').hide();
-                    $('#issue_medicines_div').hide();
+                    
+                    $('#issueMedicinesBtn').hide();
+                    $('#medicines_issued_div').hide();   
+                    
                 }
                 else {
                     pid = data[0];
+
                     $('#errorAlert').text(data.error).hide();
                     $('#patient_id').html(data[0]);
                     $('#name').html(data[2]);
@@ -202,9 +118,12 @@
                     $('#type_of_room').html(data[5]);
                     $('#doj').html(data[4]);
                     $('#address').html(data[6] + ", " + data[8] + ", " + data[7]);
-                    $('#medicines_issued_div').show();
+                    
+                    $('#issueMedicinesBtn').show();
+                    $('#medicines_issued_div').show();            
+                    
                     getMedicines();
-                    $('#issue_medicines_div').show();
+                    
                 }
 
             });
@@ -243,53 +162,6 @@
             });
     }
 
-
-    function addMedicine(){
-        $('#pid').val(pid); 
-        var qty = $('#quantity').val();
-        var rate = $('#rate').val();
-        var medicine = $('#medicine').val();
-        if(medicine == ""){
-            $('#medicine_helptext').show();
-            return false;
-        }
-        else{
-            $('#medicine_helptext').hide();
-        }
-        if(qty == ""){
-            $('#quantity_helptext').show();
-            return false;
-        }
-        else{
-            $('#quantity_helptext').hide();
-        }
-        if(rate == ""){
-            $('#rate_helptext').show();
-            return false;
-        }
-        else{
-            $('#rate_helptext').hide();
-        }
-        
-
-        var amt = parseFloat(rate)*parseInt(parseFloat(qty));
-        $('#issueBtn').show();
-        
-        
-        var tr = document.createElement('tr');
-        var td1 = tr.appendChild(document.createElement('td'));
-        var td2 = tr.appendChild(document.createElement('td'));
-        var td3 = tr.appendChild(document.createElement('td'));
-        var td4 = tr.appendChild(document.createElement('td'));
-        td1.innerHTML = "<input type='text' name = 'medicine' value='"+medicine+"' readonly  style='outline: none;background:#87ceeb;border:none;height:18px;' class='form-control text-center p-0 m-0'> ";
-        td2.innerHTML = "<input type='text' name = 'qty' value='"+parseInt(qty)+"' readonly  style='outline: none;background:#87ceeb;border:none;height:18px;' class='form-control text-center p-0 m-0'> ";
-        td3.innerHTML = "<input type='text' name = 'rate' value='"+rate+"' readonly  style='outline: none;background:#87ceeb;border:none;height:18px;' class='form-control text-center p-0 m-0'> ";;
-        td4.innerHTML = "<input type='text' name = 'amt'  value='"+amt+"' readonly  style='outline: none;background:#87ceeb;border:none;height:18px;' class='form-control text-center p-0 m-0'> ";;
-        document.getElementById('issueMedicinesTable').appendChild(tr);
-        $('#quantity').val("");
-        $('#rate').val("");
-        $('#medicine').val("");
-    }
 
 </script>
 
