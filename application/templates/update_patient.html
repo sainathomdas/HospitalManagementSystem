@@ -36,7 +36,7 @@
 
 
 <div class="wrapper mt-5" id="patientDataForm">
-    <form action=" {{ url_for('updatePatientIntoDatabase') }} " method="POST">
+    <form action=" {{ url_for('updatePatientIntoDatabase') }} " method="POST" data-parsley-validate>
         <input type="number" id="pid" value="" name="pid" hidden>
         <div class="form">
             <div class="inputfield">
@@ -45,7 +45,9 @@
                         <label for="pname">Patient Name <span class="star">*</span> </label>
                     </div>
                     <div class="col-md-8">
-                        <input type="text" name="pname" class="input form-control-sm" id="pname" required>
+                        <input type="text" pattern="^[A-Za-z-._ ]+$" id="pname" name="pname"
+                            class="input form-control-sm" required
+                            data-parsley-error-message="Only alphabet,dot,hyphen,underscore allowed">
                     </div>
                 </div>
             </div>
@@ -68,7 +70,8 @@
                         <label for="doa">Date of Admission<span class="star">*</span> </label>
                     </div>
                     <div class="col-md-8">
-                        <input type="date" onkeydown="return false" name="doa" id="doa" required />
+                        <input type="date" onkeydown="return false" placeholder="yyyy-mm-dd" class="form-control"
+                            name="doa" id="doa" required data-parsley-excluded="true" required />
                     </div>
                 </div>
             </div>
@@ -142,8 +145,19 @@
     </form>
 </div>
 
-
 <script>
+    var date = document.getElementById('doa');
+    date.max = new Date().toISOString().split("T")[0];
+</script> 
+<script>
+
+    document.getElementById('pname').disabled = true;
+    document.getElementById('page').disabled = true;
+    document.getElementById('type_of_bed').disabled = true;
+    document.getElementById('doa').disabled = true;
+    document.getElementById('paddress').disabled = true;
+
+
     function loadData() {
         $.ajax({
             data: {
@@ -161,6 +175,12 @@
                     $('#type_of_bed').val("");
                     $('#doa').val("");
                     $('#paddress').val("");
+
+                    document.getElementById('pname').disabled = true;
+                    document.getElementById('page').disabled = true;
+                    document.getElementById('type_of_bed').disabled = true;
+                    document.getElementById('doa').disabled = true;
+                    document.getElementById('paddress').disabled = true;
                 }
                 else {
                     console.log(data);
@@ -171,6 +191,12 @@
                     $('#type_of_bed').val(data[5]);
                     $('#doa').val(data[4]);
                     $('#paddress').val(data[6]);
+
+                    document.getElementById('pname').disabled = false;
+                    document.getElementById('page').disabled = false;
+                    document.getElementById('type_of_bed').disabled = false;
+                    document.getElementById('doa').disabled = false;
+                    document.getElementById('paddress').disabled = false;
                 }
 
             });

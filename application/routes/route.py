@@ -112,7 +112,7 @@ def createPatient():
         type_of_bed = request.form['type_of_bed']
         pstate = request.form['pstate']
         pcity = request.form['pcity']
-        result = patient_table.read_patient(f"ssnid={ssnid} and status='Active'")
+        result = patient_table.read_patient(f"ssnid={ssnid} and status='active'")
         if(len(result)>0):
             flash(f"Patient with ssnid = {ssnid} already exists!",category="warning")
             return redirect(url_for('createPatient'))
@@ -127,13 +127,13 @@ def createPatient():
         else:
             pid = 100000001
 
-        if patient_table.insert_patient(f"{int(pid)}, {int(ssnid)}, '{pname}',{page}, '{doa}', '{type_of_bed}', '{paddress}','{pcity}','{pstate}','Active'"):
+        if patient_table.insert_patient(f"{int(pid)}, {int(ssnid)}, '{pname}',{page}, '{doa}', '{type_of_bed}', '{paddress}','{pcity}','{pstate}','active'"):
             flash('Patient creation initiated successfully', 'success')
-            return render_template('create_patient.html', activate_patient_mgmt = True)
+            return redirect(url_for('createPatient'))
         else:
             flash('An unknown error occured', 'warning')
-            return render_template('create_patient.html', activate_patient_mgmt = True)
-    return render_template('create_patient.html', activate_patient_mgmt = True)
+            return redirect(url_for('createPatient'))
+    return render_template('create_patient.html', activate_patient_mgmt = True, date = str(datetime.now().strftime('%Y-%m-%d')))
 
 
 @app.route('/update_patient/', methods = ['GET', 'POST'])
@@ -373,7 +373,7 @@ def discharge():
     if request.method == 'POST':
         pid = int(request.form['pid'])
         if patient_table.update_patient("status='discharged'", f"pid={pid}"):
-            flash("Patient has been discharged!", category= 'success')
+            flash(f"Patient with id = {pid} has been discharged!", category= 'success')
             return redirect(url_for('billing'))
         else:
             flash('An unknown error occured', 'warning')

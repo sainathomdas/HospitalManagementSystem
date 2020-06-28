@@ -11,7 +11,7 @@
 
 	{% include "includes/flash_message.html" %}
 
-	<form action=" {{ url_for('createPatient') }} " method="POST">
+	<form action=" {{ url_for('createPatient') }} " method="POST" data-parsley-validate>
 		<div class="form">
 			<div class="inputfield">
 				<div class="row">
@@ -19,8 +19,7 @@
 						<label for="ssnid">Patient SSN ID <span class="star">*</span> </label>
 					</div>
 					<div class="col-md-8">
-						<input id="ssnid" name="ssnid" class="input form-control-sm" required minlength="9"
-							maxlength="9">
+						<input 	data-parsley-type="number" id="ssnid" name="ssnid" class="input form-control-sm" minlength="9" maxlength="9" data-parsley-error-message="Only digits allowed and length must be 9" required>
 					</div>
 				</div>
 			</div>
@@ -31,7 +30,7 @@
 						<label for="pname">Patient Name <span class="star">*</span> </label>
 					</div>
 					<div class="col-md-8">
-						<input type="text" name="pname" class="input form-control-sm" required>
+						<input type="text" pattern="^[A-Za-z-._ ]+$"  name="pname" class="input form-control-sm" required data-parsley-error-message="Only alphabet,dot,hyphen,underscore allowed">
 					</div>
 				</div>
 			</div>
@@ -42,8 +41,9 @@
 						<label for="page">Patient Age <span class="star">*</span> </label>
 					</div>
 					<div class="col-md-8">
-						<input name="page" class="input form-control-sm" data-parsley-type="number"
-							data-parsley-type="integer" maxlength="3" required>
+						
+                        <input name="page" id="page" class="input form-control-sm" data-parsley-type="number"
+                            data-parsley-type="integer" maxlength="3" required>
 					</div>
 				</div>
             </div>
@@ -55,7 +55,7 @@
                         <label for="doa">Date of Admission<span class="star">*</span> </label>
                     </div>
                     <div class="col-md-8">
-                        <input type="date" onkeydown="return false" name="doa" id="doa" required />
+                        <input type="date" value={{date}} placeholder="yyyy-mm-dd" class="form-control" onkeydown="return false" name="doa" id="doa" required data-parsley-excluded="true" />
                     </div>
                 </div>
             </div>
