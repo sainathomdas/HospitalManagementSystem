@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block title %} ABC Hospital | Diagnostics{% endblock %}
+
+{% block content %}
+
+<div class="title mt-4">
+    <!-- Search Patient -->
+</div>
+
+
+{% include "includes/flash_message.html" %}
+
+<div class="wrapper mt-3">
+    <div class="form">
+        <div class="inputfield">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="pid">Patient ID <span class="star">*</span> </label>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" pattern="\d*" id="pid_for_search" class="input form-control-sm" value="" required
+                        maxlength="9" minlength="9">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn-sm black text-white" onclick="loadData()"> GET </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="errorAlert" class="alert alert-danger alert-dismissible container mx-auto mt-3 col-md-10" role="alert"
+    style="max-width: 500px;display: none;">
+</div>
+
+<div class="container">
+    <table class="table container table-sm  table-hover table-bordered table-striped text-center" align="center">
+        <thead style="background-color: #1b6ca8;" class="text-white">
+            <tr>
+                <th class="font-weight-bold">Patient ID</th>
+                <th scope="col" class="font-weight-bold th-sm">Name</th>
+                <th scope="col" class="font-weight-bold th-sm">Age</th>
+                <th scope="col" class="font-weight-bold">Address</th>
+                <th scope="col" class="font-weight-bold">DOJ</th>
+                <th scope="col" class="font-weight-bold">Date of Discharge</th>
+                <th scope="col" class="font-weight-bold">Type of Room</th>
+            </tr>
+        </thead>
+        <tbody class="text-dark font-weight-bold">
+            <tr>
+                <td id="patient_id" class="font-weight-normal"></td>
+                <td id="name" class="font-weight-normal"></td>
+                <td id="age" class="font-weight-normal"></td>
+                <td id="address" class="font-weight-normal"></td>
+                <td id="doj" class="font-weight-normal"></td>
+                <td id="dod" class="font-weight-normal"></td>
+                <td id="type_of_room" class="font-weight-normal"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="ml-lg-5">
+        <h6 style="display: inline;" class="mr-5"><strong>No.of days: </strong> <span id="num_of_days"></span></h6>
+        <h6 style="display: inline;" class="mx-5"><strong>Bill for Room: </strong> <span id="bill_for_room"></span></h6>
+    </div>
+
+</div>
+<!-- ================================================================================ -->
+
+<div class="container my-4" id="medicines_issued_div" style="display: none;">
+    <h5 class="text-center text-dark"><strong>Pharmacy Charges</strong> </h5>
+    <table class="table w-75 container table-sm table-fixed table-hover table-bordered table-striped text-center"
+        align="center">
+        <thead style="background-color: #212121;" class="text-white">
+            <tr>
+                <th class="font-weight-bold">Medicine</th>
+                <th scope="col" class="font-weight-bold th-lg">Quantity</th>
+                <th scope="col" class="font-weight-bold th-sm">Rate(in Rs.)</th>
+                <th scope="col" class="font-weight-bold">Amount(in Rs.)</th>
+            </tr>
+        </thead>
+        <tbody class="text-dark font-weight-bold" id="medicinesTable">
+
+        </tbody>
+    </table>
+    <div class="container text-center">
+        <h6 style="display: inline;" class="mr-5"><strong>Bill for Pharmacy: </strong> <span id="pharmacy_bill"></span></h6>
+        
+    </div>
+</div>
+<!-- ================================================================================ -->
+
+<div class="container my-5" id="tests_conducted_div" style="display: none;">
+    <h5 class="text-center"><strong>Diagnostics Charges</strong></h5>
+    <table class="table w-50 container table-sm table-fixed table-hover table-bordered table-striped text-center"
+        align="center">
+        <thead style="background-color: #212121;" class="text-white">
+            <tr>
+                <th class="font-weight-bold">Name of the Test</th>
+                <th scope="col" class="font-weight-bold">Amount(in Rs.)</th>
+            </tr>
+        </thead>
+        <tbody class="text-dark font-weight-bold" id="diagnosticsTable">
+
+        </tbody>
+    </table>
+    <div class="container text-center">
+        <h6 style="display: inline;" class="mr-5"><strong>Bill for Diagnostics: </strong> <span id="diag_bill"></span></h6>
+    </div>
+</div>
+<!-- ================================================================================ -->
+
+<div class="container text-center" id="grandTotalDiv" style="display: none;">
+    <h6><strong>GRAND TOTAL:</strong> <span id="grand_total"></span> </h6>
+    <form action="{{ url_for('discharge') }}" method="POST">
+        <input type="number" id="pid" name="pid" value="" hidden>
+        <input type="submit" class="btn black text-white" value="Confirm">
+    </form>
+</div>
+
+<!-- ================================================================================ -->
+<script>
+    var pid;
+    var d = new Date();
+    var num_of_days;
+    var pharmacy_bill = 0;
+    var total_bill = 0;
+    var diag_bill = 0;
+    var month = d.getMonth() + 1;
+    var day = d.getDate();
+
+    var discharge_date = d.getFullYear() + '-' +
+        (month < 10 ? '0' : '') + month + '-' +
+        (day < 10 ? '0' : '') + day;
+
+    function loadData() {
+        pharmacy_bill = 0;
+        total_bill = 0;
+        diag_bill = 0;
+        $.ajax({
+            data: {
+                pid: $('#pid_for_search').val()
+            },
+            type: 'POST',
+            url: "{{ url_for('getPatient') }}"
+        })
+            .done(function (data) {
+                if (data.error) {
+                    $('#errorAlert').text(data.error).show();
+                    $('#patient_id').html("");
+                    $('#name').html("");
+                    $('#age').html("");
+                    $('#type_of_room').html("");
+                    $('#doj').html("");
+                    $('#dod').html("");
+                    $('#address').html("");
+                    $('#num_of_days').html("");
+                    $('#bill_for_room').html("");
+                    $('#medicines_issued_div').hide();
+                    $('#tests_conducted_div').hide(); 
+                    $('#grandTotalDiv').hide();
+                }
+                else {
+                    pid = data[0];
+                    $('#pid').val(pid);
+                    $('#errorAlert').text(data.error).hide();
+                    $('#patient_id').html(data[0]);
+                    $('#name').html(data[2]);
+                    $('#age').html(data[3]);
+                    $('#type_of_room').html(data[5]);
+                    $('#doj').html(data[4]);
+                    $('#dod').html(discharge_date);
+                    $('#address').html(data[6] + ", " + data[8] + ", " + data[7]);
+                    num_of_days = datediff(parseDate(data[4]), parseDate(discharge_date));
+                    $('#num_of_days').html(num_of_days);
+                    var bill;
+                    if (data[5] == "semi_sharing") {
+                        bill = num_of_days * 4000;
+                    }
+                    else if (data[5] == "General Ward") {
+                        bill = num_of_days * 2000;
+                    }
+                    else {
+                        bill = num_of_days * 8000;
+                    }
+                    $('#bill_for_room').html("Rs." + bill);
+                    total_bill += bill;
+                    $('#medicines_issued_div').show();                    
+                    getMedicines();
+                    $('#tests_conducted_div').show();
+                    getTestsConducted();
+                    $('#grandTotalDiv').show();
+                    $('#grand_total').html("Rs." + total_bill);
+
+                }
+
+            });
+    }
+
+    function parseDate(str) {
+        var mdy = str.split('-');
+        return new Date(mdy[0], mdy[1] - 1, mdy[2]);
+    }
+    function datediff(first, second) {
+        // Take the difference between the dates and divide by milliseconds per day.
+        // Round to nearest whole number to deal with DST.
+        return Math.round((second - first) / (1000 * 60 * 60 * 24));
+    }
+
+    function getMedicines() {
+        $.ajax({
+            data: {
+                pid: pid
+            },
+            type: 'POST',
+            url: "{{ url_for('getMedicines') }}"
+        })
+            .done(function (data) {
+                if (data.error) {
+                    $('#medicinesTable').html("<tr><td colspan = 4>" + data.error + "</td></tr>");
+
+                }
+                else {
+                    var my_html = ""
+                    $('#errorAlert').text(data.error).hide();
+                    data.forEach(row => {
+                        my_html += '<tr><td class="font-weight-normal">' +
+                            row[2] + '</td><td class="font-weight-normal">' +
+                            row[3] + ' </td><td class="font-weight-normal">' +
+                            row[4] + ' </td><td class="font-weight-normal">' +
+                            row[5] + '</td></tr>';
+
+                        pharmacy_bill += parseInt(row[5]);
+                    });
+                    $('#medicinesTable').html(my_html);
+                    $('#pharmacy_bill').html("Rs." + pharmacy_bill);
+                    total_bill += pharmacy_bill;
+                    $('#grand_total').html("Rs." + total_bill);
+
+                }
+
+            })
+            .fail(function (error) {
+                alert(error);
+            });
+    }
+
+    function getTestsConducted() {
+        $.ajax({
+            data: {
+                pid: pid
+            },
+            type: 'POST',
+            url: "{{ url_for('getTestsConducted') }}"
+        })
+            .done(function (data) {
+                if (data.error) {
+                    $('#diagnosticsTable').html("<tr><td colspan = 2>" + data.error + "</td></tr>");
+
+                }
+                else {
+                    var my_html = ""
+                    $('#errorAlert').text(data.error).hide();
+                    data.forEach(row => {
+                        my_html += '<tr><td class="font-weight-normal">' +
+                            row[0] + '</td><td class="font-weight-normal">' +
+                            row[1] + ' </td>';
+                            diag_bill += parseInt(row[1]);
+                    });
+                    $('#diagnosticsTable').html(my_html);
+                    $('#diag_bill').html("Rs." + diag_bill);
+                    total_bill += diag_bill;
+                    $('#grand_total').html("Rs." + total_bill);
+
+                }
+
+            })
+            .fail(function (error) {
+                alert(error);
+            });
+    }
+
+</script>
+
+
+{% endblock %}

@@ -147,10 +147,10 @@
                     $('#errorAlert').text(data.error).hide();
                     data.forEach(row => {
                         my_html += '<tr><td class="font-weight-normal">' +
-                            row[1] + '</td><td class="font-weight-normal">' +
-                            row[2] + ' </td><td class="font-weight-normal">' +
+                            row[2] + '</td><td class="font-weight-normal">' +
                             row[3] + ' </td><td class="font-weight-normal">' +
-                            row[4] + '</td></tr>';
+                            row[4] + ' </td><td class="font-weight-normal">' +
+                            row[5] + '</td></tr>';
                     });
                     $('#medicinesTable').html(my_html);
 

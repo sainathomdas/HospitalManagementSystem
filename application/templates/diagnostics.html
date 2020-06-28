@@ -58,7 +58,7 @@
 </table>
 
 <!-- ================================================================================ -->
-<div class="container my-5" id="medicines_issued_div" style="display: none;">
+<div class="container my-5" id="tests_conducted_div" style="display: none;">
     <h5><strong>Diagnostics Conducted:</strong></h5>
     <table class="table w-75 container table-sm table-fixed table-hover table-bordered table-striped text-center"
         align="center">
@@ -103,7 +103,7 @@
                     $('#address').html("");
                     
                     $('#addDiagnosticsBtn').hide();
-                    $('#medicines_issued_div').hide();   
+                    $('#tests_conducted_div').hide();   
                     
                 }
                 else {
@@ -118,16 +118,15 @@
                     $('#address').html(data[6] + ", " + data[8] + ", " + data[7]);
                     
                     $('#addDiagnosticsBtn').show();
-                    $('#medicines_issued_div').show();            
-                    
-                    getMedicines();
+                    $('#tests_conducted_div').show();
+                    getTestsConducted();
                     
                 }
 
             });
     }
 
-    function getMedicines() {
+    function getTestsConducted() {
         $.ajax({
             data: {
                 pid: pid

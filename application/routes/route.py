@@ -59,6 +59,37 @@ def logout():
     session.clear()
     flash('You are now logged out !','success')
     return redirect(url_for('login'))
+
+
+def is_registration_executive(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if 'login_type' in session and session['login_type']=='reg':
+            return f(*args,*kwargs)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    return wrap
+
+def is_pharmacist(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if 'login_type' in session and session['login_type']=='pharm':
+            return f(*args,*kwargs)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    return wrap
+
+def is_diagnostic(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if 'login_type' in session and session['login_type']=='diag':
+            return f(*args,*kwargs)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    return wrap
     
 @app.route('/home/')
 @is_logged_in
@@ -70,6 +101,7 @@ def home(login_type = None):
 
 @app.route('/create_patient/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_registration_executive
 def createPatient():
     if request.method == 'POST':
         ssnid = int(request.form['ssnid'])
@@ -106,6 +138,7 @@ def createPatient():
 
 @app.route('/update_patient/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_registration_executive
 def updatePatient():    
     return render_template('update_patient.html', activate_patient_mgmt = True)
 
@@ -120,6 +153,9 @@ def getPatient():
             session['pid'] = pid
             for row in result:
                 session['pid'] = pid
+                if row[9] == 'discharged':
+                    session.pop('pid', None)
+                    return jsonify({'error' : 'Patient has been discharged !!'})
                 return jsonify(row)
                 
         else:
@@ -128,6 +164,7 @@ def getPatient():
 
 @app.route('/update_patient_into_database/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_registration_executive
 def updatePatientIntoDatabase():
     if request.method == 'POST':
         pid = int(request.form['pid'])
@@ -139,7 +176,7 @@ def updatePatientIntoDatabase():
         pstate = request.form['pstate']
         pcity = request.form['pcity']
         if patient_table.update_patient(f"name='{pname}', age={page},dateOfAdmission='{doa}',typeOfBed='{type_of_bed}' ,address='{paddress}', city='{pcity}', state = '{pstate}'", f"pid={pid}"):
-            flash("Updated Successfully", category= 'success')
+            flash("Patient update initiated successfully", category= 'success')
             return redirect(url_for('updatePatient'))
         else:
             flash('An unknown error occured', 'warning')
@@ -148,12 +185,14 @@ def updatePatientIntoDatabase():
 
 @app.route('/delete_patient/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_registration_executive
 def deletePatient():    
     return render_template('delete_patient.html', activate_patient_mgmt = True)
 
 
 @app.route('/delete_patient_from_database/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_registration_executive
 def deletePatientFromDatabase():    
     if request.method == 'POST':
         pid = int(request.form['pid'])
@@ -166,6 +205,7 @@ def deletePatientFromDatabase():
 
 @app.route('/view_patients/')
 @is_logged_in
+@is_registration_executive
 def viewPatients():
     result = patient_table.read_patient()
     return render_template('view_patient.html', datatable = True, viewPatients = True, data=result)
@@ -173,6 +213,7 @@ def viewPatients():
 
 @app.route('/search_patient/')
 @is_logged_in
+@is_registration_executive
 def searchPatient():
     return render_template('search_patient.html', searchPatient = True)
 
@@ -181,6 +222,7 @@ def searchPatient():
 
 @app.route('/issue_medicines/')
 @is_logged_in
+@is_pharmacist
 def issueMedicines():
     return render_template('issue_medicines.html', issueMedicines = True)
 
@@ -199,6 +241,7 @@ def getMedicines():
 
 @app.route('/add_medicines_to_database/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_pharmacist
 def addMedicinesToDatabase():
     if request.method == 'POST':
         pid = session['pid']
@@ -217,6 +260,7 @@ def addMedicinesToDatabase():
 
 @app.route('/issue_new_medicines/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_pharmacist
 def issueNewMedicines():
     if 'pid' in session:
         medicines = medicine_table.read_medicine()
@@ -227,6 +271,7 @@ def issueNewMedicines():
 
 @app.route('/get_medicine_details/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_pharmacist
 def getMedicineDetails():
     if request.method == 'POST':
         mid = request.form['medicine_id'] # mid = medicine_id
@@ -238,13 +283,13 @@ def getMedicineDetails():
 
 @app.route('/diagnostics/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_diagnostic
 def diagnostics():
     return render_template('diagnostics.html', diagnostics = True)
 
-
-
 @app.route('/add_diagnostics/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_diagnostic
 def addDiagnostics():
     if 'pid' in session:
         diagnostics = diagnostics_table.read_diagnostics()
@@ -265,6 +310,7 @@ def getTestsConducted():
 
 @app.route('/get_test_details/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_diagnostic
 def getTestDetails():
     if request.method == 'POST':
         tid = request.form['test_id'] 
@@ -275,6 +321,7 @@ def getTestDetails():
 
 @app.route('/add_tests_to_database/', methods = ['GET', 'POST'])
 @is_logged_in
+@is_diagnostic
 def addTestsToDatabase():
     if request.method == 'POST':
         pid = session['pid']
@@ -282,8 +329,52 @@ def addTestsToDatabase():
         for tname in request.form.getlist('tname'):
             result = diagnostics_table.getTestsByName(tname)
             for row in result:
-                patient_diagnostics_table.insert_patient_diagnostics(f"{int(pid)},{row[0]}")
-        
+                patient_diagnostics_table.insert_patient_diagnostics(f"{int(pid)},{row[0]}")        
         flash('Diagnostics added successfully', 'success')
         session.pop('pid', None)
         return redirect(url_for('diagnostics'))
+
+
+# =======================================================================================================
+# Billing
+
+@app.route('/billing/', methods = ['GET', 'POST'])
+@is_logged_in
+@is_registration_executive
+def billing():
+    return render_template('billing.html', billing = True)
+
+
+# @app.route('/get_patient_for_billing/', methods = ['GET', 'POST'])
+# @is_logged_in
+# @is_registration_executive
+# def getPatientForBilling():
+#     if request.method == 'POST':
+#         pid = request.form['pid']
+#         result = patient_table.read_patient(f"pid={pid}")
+#         if (len(result) > 0):
+#             session['pid'] = pid
+#             for row in result:
+#                 session['pid'] = pid
+#                 if row[9] == 'discharged':
+#                     session.pop('pid', None)
+#                     return jsonify({'error' : 'Patient has been dischared !!'})
+#                 return jsonify(row)
+                
+#         else:
+#             session.pop('pid', None)
+#             return jsonify({'error' : 'Patient not found !!'})
+
+
+@app.route('/discharge/', methods = ['GET', 'POST'])
+@is_logged_in
+@is_registration_executive
+def discharge():
+    if request.method == 'POST':
+        pid = int(request.form['pid'])
+        if patient_table.update_patient("status='discharged'", f"pid={pid}"):
+            flash("Patient has been discharged!", category= 'success')
+            return redirect(url_for('billing'))
+        else:
+            flash('An unknown error occured', 'warning')
+            return redirect(url_for('billing'))
