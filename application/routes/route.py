@@ -156,8 +156,21 @@ def getPatient():
                 if row[9] == 'discharged':
                     session.pop('pid', None)
                     return jsonify({'error' : 'Patient has been discharged !!'})
-                return jsonify(row)
-                
+                return jsonify(row)                
+        else:
+            session.pop('pid', None)
+            return jsonify({'error' : 'Patient not found !!'})
+
+@app.route('/get_patient_for_deletion/', methods = ['GET', 'POST'])
+@is_logged_in
+def getPatientForDeletion():
+    if request.method == 'POST':
+        pid = request.form['pid']
+        result = patient_table.read_patient(f"pid={pid}")
+        if (len(result) > 0):
+            for row in result:
+                session['pid'] = pid
+                return jsonify(row)                
         else:
             session.pop('pid', None)
             return jsonify({'error' : 'Patient not found !!'})

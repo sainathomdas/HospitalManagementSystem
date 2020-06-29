@@ -34,9 +34,6 @@
   {% else %}
   {% include "includes/diag_navbar.html" %}
   {% endif %}
-
-
-
   {% endif %}
 
 
@@ -129,7 +126,6 @@
       All rights reserved
     </div>
     <!-- Copyright -->
-
   </footer>
   <!-- Footer -->
   {% endif %}
@@ -145,7 +141,6 @@
   <script type="text/javascript" src=" {{ url_for('static', filename = 'js/parsley.min.js') }}"></script>
   <script type="text/javascript" src=" {{ url_for('static', filename = 'js/my_js.js') }}"></script>
   {% if datatable %}
-
   <script type="text/javascript" src="{{ url_for('static', filename = 'js/addons/datatables.min.js') }}"></script>
   <script>
     $(document).ready(function () {
@@ -157,9 +152,5 @@
   </script>
   {% endif %}
 
-
-
-
 </body>
-
 </html>

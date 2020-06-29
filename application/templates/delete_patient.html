@@ -128,7 +128,7 @@
                 pid: $('#pid_for_search').val()
             },
             type: 'POST',
-            url: "{{ url_for('getPatient') }}"
+            url: "{{ url_for('getPatientForDeletion') }}"
         })
             .done(function (data) {
                 if (data.error) {

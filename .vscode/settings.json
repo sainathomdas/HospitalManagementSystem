@@ -1,3 +1,7 @@
 {
-    "python.pythonPath": "C:\\Users\\USER\\Anaconda3\\python.exe"
+    "python.pythonPath": "C:\\Users\\USER\\Anaconda3\\python.exe",
+    "editor.quickSuggestionsDelay": 5,
+    "workbench.colorTheme": "Visual Studio Dark",
+    "workbench.preferredDarkColorTheme": "Visual Studio Dark",
+    "workbench.preferredHighContrastColorTheme": "Visual Studio Dark"
 }
