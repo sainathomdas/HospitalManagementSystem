@@ -60,5 +60,7 @@ def delete_patient_diagnostics(condition="1=1"):
         cur.execute(sql)
     except:
         print("Something Went wrong")
+        return False
     conn.commit()
     conn.close()
+    return True
