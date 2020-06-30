@@ -42,6 +42,10 @@ def login():
     return render_template('login.html', login_page = True)
 
 
+
+#-----------------------------------------------------------------------------------#
+#------------------------ENABLE THIS DECORATOR FOR PRODUCTION-----------------------#
+#-----------------------------------------------------------------------------------# 
 # Declaring a decorator to check if user is logged in (Authorization)
 def is_logged_in(f):
     @wraps(f)
@@ -52,13 +56,6 @@ def is_logged_in(f):
             flash('Must be logged in to process','warning')
             return redirect(url_for('login'))
     return wrap
-
-@app.route('/logout/')
-@is_logged_in
-def logout():
-    session.clear()
-    flash('You are now logged out !','success')
-    return redirect(url_for('login'))
 
 
 def is_registration_executive(f):
@@ -90,6 +87,52 @@ def is_diagnostic(f):
             session.clear()
             return redirect(url_for('login'))
     return wrap
+
+
+#-----------------------------------------------------------------------------------#
+#------------------------ABOVE DECORATOR IS FOR PRODUCTION--------------------------#
+#-----------------------------------------------------------------------------------# 
+
+
+#-----------------------------------------------------------------------------------#
+#------------------------ENABLE THIS DECORATOR FOR UNIT TESTS-----------------------#
+#-----------------------------------------------------------------------------------# 
+
+# def is_logged_in(f):
+#     @wraps(f)
+#     def wrap(*args,**kwargs):
+#         return f(*args,*kwargs)
+#     return wrap
+
+
+# def is_registration_executive(f):
+#     @wraps(f)
+#     def wrap(*args,**kwargs):
+#         return f(*args,*kwargs)
+#     return wrap
+
+# def is_pharmacist(f):
+#     @wraps(f)
+#     def wrap(*args,**kwargs):
+#         return f(*args,*kwargs)
+#     return wrap
+
+# def is_diagnostic(f):
+#     @wraps(f)
+#     def wrap(*args,**kwargs):
+#         return f(*args,*kwargs)
+#     return wrap   
+
+#-----------------------------------------------------------------------------------#
+#------------------------ABOVE DECORATOR IS FOR UNIT TEST---------------------------#
+#-----------------------------------------------------------------------------------# 
+
+@app.route('/logout/')
+@is_logged_in
+def logout():
+    session.clear()
+    flash('You are now logged out !','success')
+    return redirect(url_for('login'))
     
 @app.route('/home/')
 @is_logged_in
