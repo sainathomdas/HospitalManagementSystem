@@ -9,11 +9,11 @@ def create_conn():
         print(e)
     return conn
     
-
+# this function is used to insert records in logins table
 def insert_logins(values):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "insert into logins(username, password, role) values({});".format(values);
+    sql = "insert into logins(username, password, role) values({});".format(values)
     try:
         cur.execute(sql)
         return True
@@ -22,7 +22,8 @@ def insert_logins(values):
     conn.commit()
     conn.close()
     
-
+# this function is used to read records from logins table
+# if no argument is passed, this will return all the records avalable in the table
 def read_logins(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
@@ -37,12 +38,11 @@ def read_logins(condition="1=1"):
     conn.close()
     return rows
     
-
+# this function is used to update records in logins table based on the condition provided as an arugument
 def update_logins(values, condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "update logins set {} where {};".format(values, condition)
-    
+    sql = "update logins set {} where {};".format(values, condition)    
     try:
         cur.execute(sql)
     except:
@@ -50,12 +50,11 @@ def update_logins(values, condition="1=1"):
     conn.commit()
     conn.close()
     
-
+# this function is used to delete records from logins table based on the condition provided as an arugument
 def delete_logins(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
-    sql = "delete from  logins  where {};".format(condition)
-    
+    sql = "delete from  logins  where {};".format(condition)    
     try:
         cur.execute(sql)
     except:

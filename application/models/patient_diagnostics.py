@@ -9,12 +9,13 @@ def create_conn():
         print(e)
     return conn
 
+# this function is used to insert records in patient_diagnostics table
 def insert_patient_diagnostics(values):
     print(values)
     conn = create_conn()
     cur = conn.cursor()
     sql = "insert into patient_diagnostics(pid,tid) values({});".format(values);
-    print(sql)
+
     try:
         cur.execute(sql)
     except:
@@ -22,12 +23,13 @@ def insert_patient_diagnostics(values):
     conn.commit()
     conn.close()
     
-
+# this function is used to read records from patient_diagnostics table
+# if no argument is passed, this will return all the records avalable in the table
 def read_patient_diagnostics(pid):
     conn = create_conn()
     cur = conn.cursor()
     sql = f"SELECT d.name, d.charge FROM diagnostics d, patient_diagnostics p WHERE p.pid={pid} and p.tid=d.id"
-    print(sql)
+
     try:
         cur.execute(sql)
     except:
@@ -37,12 +39,12 @@ def read_patient_diagnostics(pid):
     conn.close()
     return rows
     
-
+# this function is used to update records in patient_diagnostics table based on the condition provided as an arugument
 def update_patient_diagnostics(values, condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
     sql = "update patient_diagnostics set {} where {};".format(values, condition)
-    print(sql)
+
     try:
         cur.execute(sql)
     except:
@@ -50,12 +52,12 @@ def update_patient_diagnostics(values, condition="1=1"):
     conn.commit()
     conn.close()
     
-
+# this function is used to delete records from patient_diagnostics table based on the condition provided as an arugument
 def delete_patient_diagnostics(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
     sql = "delete from  patient_diagnostics  where {};".format(condition)
-    print(sql)
+
     try:
         cur.execute(sql)
     except:

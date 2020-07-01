@@ -210,7 +210,7 @@ def deletePatientFromDatabase():
     if request.method == 'POST':
         pid = int(request.form['pid'])
         if medicines_issued_table.delete_medicines_issued(f"pid={pid}") and patient_diagnostics_table.delete_patient_diagnostics(f"pid={pid}") and patient_table.delete_patient(f"pid={pid}"):
-            flash("Successfully Deleted !!","success")
+            flash("Patient deletion initiated successfully !!","success")
         else:
             flash('An unknown error occured', 'warning')
         return redirect(url_for('deletePatient'))

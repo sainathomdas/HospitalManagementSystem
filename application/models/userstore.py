@@ -1,3 +1,5 @@
+# To store the login timestamps
+
 import sqlite3
 from sqlite3 import Error
 def create_conn():
@@ -9,7 +11,7 @@ def create_conn():
         print(e)
     return conn
     
-
+# this function is used to insert records in user_store table
 def insert_user_store(values):
     conn = create_conn()
     cur = conn.cursor()
@@ -22,7 +24,8 @@ def insert_user_store(values):
     conn.commit()
     conn.close()
     
-
+# this function is used to read records from user_store table
+# if no argument is passed, this will return all the records avalable in the table
 def read_user_store(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
@@ -38,7 +41,7 @@ def read_user_store(condition="1=1"):
     conn.close()
     return rows
     
-
+# this function is used to update records in user_store table based on the condition provided as an arugument
 def update_user_store(values, condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
@@ -51,7 +54,7 @@ def update_user_store(values, condition="1=1"):
     conn.commit()
     conn.close()
     
-
+# this function is used to delete records from user_store table based on the condition provided as an arugument
 def delete_user_store(condition="1=1"):
     conn = create_conn()
     cur = conn.cursor()
